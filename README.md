@@ -10,6 +10,7 @@ The workflow integrates histopathology-guided spatial annotations with spatial t
 
 # Repository overview
 
+```
 Raw Visium spatial transcriptomics
         │
         ▼
@@ -19,7 +20,7 @@ Raw Visium spatial transcriptomics
 02  Histopathology analyses
         │
         ▼
-03  Tumor architecture analysis
+03  Tumour architecture analysis
         │
         ▼
 04  Single-cell reference assembly
@@ -50,10 +51,12 @@ Raw Visium spatial transcriptomics
         │
         ▼
 13  CNV & mutation analyses
+```
 
+---
 
 # Repository structure
-
+```
 ├── 00_forestplot.R
 ├── 01_preprocessing_import_filter_normalize_ST.R
 ├── 02_histopathology.R
@@ -68,18 +71,19 @@ Raw Visium spatial transcriptomics
 ├── 11_spatial4hr_genomic_risk_comparison.R
 ├── 12_external_validation.R
 └── 13_CNV_mutation.R
+```
 
 
 # Script descriptions
 
-## 00_forestplot.R
+# 00_forestplot.R
 Helper functions for generating forest plots used throughout the manuscript.
 Used by multiple downstream analyses.
 
 
-## 01_preprocessing_import_filter_normalize_ST.R
+# 01_preprocessing_import_filter_normalize_ST.R
 Preprocess raw Visium spatial transcriptomic data.
-# Main analyses
+## Main analyses
 - Import raw Visium datasets
 - Import histopathology annotation fraction files
 - Merge annotation fractions into Seurat metadata
@@ -87,20 +91,20 @@ Preprocess raw Visium spatial transcriptomic data.
 - Spot filtering
 - Data normalisation
 - Histopathology-guided filtering
-# Output
+## Output
 - Processed Seurat object
 - Metadata used throughout downstream analyses
 
 
-## 02_histopathology.R
+# 02_histopathology.R
 Histopathological characterisation of the spatial transcriptomics cohort.
-# Main analyses
+## Main analyses
 - Representative H&E sections and manual annotations
 - Cohort clinicopathological summary
 - Histopathological compartment composition
 - Histopathology–cell type associations
 - Histopathology–gene expression correlations
-# Figures
+## Figures
 - Figure 1b
 - Figure 1c
 - Figure 1d
@@ -110,9 +114,9 @@ Histopathological characterisation of the spatial transcriptomics cohort.
 - Extended Data Figure 4
 
 
-## 03_tumor_architecture_patterns.R
+# 03_tumor_architecture_patterns.R
 Characterise tumour architecture using tumour-content binning.
-# Main analyses
+## Main analyses
 - Tumour-content binning
 - Hierarchical clustering of tumours
 - Definition of Cell-dense, Scattered and Local-islands architecture
@@ -120,37 +124,37 @@ Characterise tumour architecture using tumour-content binning.
 - Cell-type comparisons
 - Clinicopathological associations
 - Survival analyses
-# Figures
+## Figures
 - Figure 2a–h
 - Extended Data Figure 6
 
 
-## 04_single_cell_reference_assembly.R
+# 04_single_cell_reference_assembly.R
 Construct the single-cell reference used for CARD deconvolution.
-# Main analyses
+## Main analyses
 - Wu et al. breast cancer reference
 - Tang et al. adipocyte reference
 - Reference integration
 - Preparation of CARD reference object
-# Output
+## Output
 Integrated single-cell reference.
 
 
-## 05_CARD.R
+# 05_CARD.R
 Infer cell-type proportions using CARD.
-# Main analyses
+## Main analyses
 - CARD deconvolution
 - Spot-level cell-type abundance estimation
 - Cell-type correlation analyses
-# Figures
+## Figures
 - Extended Data Figure 5
-**# Output**
+## Output
 Spot-level inferred cell-type proportions.
 
 
-## 06_unsupervised_clustering.R
+# 06_unsupervised_clustering.R
 Identify conserved spatial transcriptional programmes.
-# Main analyses
+## Main analyses
 - Unsupervised clustering
 - Cluster annotation
 - Hallmark pathway enrichment
@@ -159,35 +163,35 @@ Identify conserved spatial transcriptional programmes.
 - Survival analyses
 - External validation in METABRIC
 - External validation in SCAN-B
-# Figures
+## Figures
 - Figure 3a–i
 - Extended Data Figure 7
 
 
-## 07_pseudobulk_construction.R
+# 07_pseudobulk_construction.R
 Generate patient-level pseudobulk transcriptomes.
-# Main analyses
+## Main analyses
 - Whole-sample pseudobulk
 - Tumour pseudobulk
 - Stromal pseudobulk
-# Output
+## Output
 Expression matrices used by downstream analyses.
 
 
-## 08_molecular_scores.R
+# 08_molecular_scores.R
 Calculate molecular subtype and genomic risk scores.
-# Main analyses
+## Main analyses
 - PAM50 (AIMS)
 - Genomic Grade Index (GGI)
 - MammaPrint
 - Oncotype DX (genefu)
-# Output
+## Output
 Patient-level molecular subtype assignments and genomic risk scores.
 
 
-## 09_WGCNA.R
+# 09_WGCNA.R
 Identify relapse-associated co-expression programmes.
-# Main analyses
+## Main analyses
 - Weighted Gene Co-expression Network Analysis
 - Module detection
 - Module annotation
@@ -195,14 +199,14 @@ Identify relapse-associated co-expression programmes.
 - Survival analyses
 - Biological process enrichment
 - External validation
-**#Figures**
+## Figures
 - Figure 4a–f
 - Extended Data Figure 8
 
 
-## 10_multimodal_integration.R
+# 10_multimodal_integration.R
 Integrate histopathology, spatial clusters, WGCNA modules and cell-type composition to identify Spatial4HR+ subtypes.
-# Main analyses
+## Main analyses
 - CIMLR
 - Multi-omic integration
 - Spatial4HR+ subtype discovery
@@ -210,14 +214,14 @@ Integrate histopathology, spatial clusters, WGCNA modules and cell-type composit
 - Hallmark pathway analysis
 - Differential expression
 - EnR versus SF comparisons
-# Figures
+## Figures
 - Figure 5a–e
 - Extended Data Figure 9
 
 
-## 11_spatial4hr_genomic_risk_comparison.R
+# 11_spatial4hr_genomic_risk_comparison.R
 Compare Spatial4HR+ with established molecular prognostic assays.
-# Main analyses
+## Main analyses
 - PAM50 classification
 - Oncotype DX
 - MammaPrint
@@ -225,58 +229,64 @@ Compare Spatial4HR+ with established molecular prognostic assays.
 - Survival analyses
 - Stromal pseudobulk pathway analysis
 - Comparison of spatial versus genomic risk
-# Figures
+## Figures
 - Figure 6a–e
 
 
-## 12_external_validation.R
+# 12_external_validation.R
 Validate Spatial4HR+ across independent cohorts.
-# Main analyses
-## METABRIC
+## Main analyses
+### METABRIC
 - Data preprocessing
 - Spatial4HR+ subtype prediction
 - Survival analysis
 - xCell cell-type inference
 - Hallmark pathway analysis
-## SCAN-B
+### SCAN-B
 - Data preprocessing
 - Spatial4HR+ subtype prediction
 - Survival analysis
 - xCell cell-type inference
 - Hallmark pathway analysis
-## NeoRHEA
+### NeoRHEA
 - Data preprocessing
 - Spatial4HR+ subtype assignment
 - Endocrine therapy response
 - Ki67 response
-# Figures
+## Figures
 - Figure 7a–e
 - Figure 7h
 - Figure 7i
 - Extended Data Figure 10
 
 
-## 13_CNV_mutation.R
+# 13_CNV_mutation.R
 Characterise genomic alterations associated with Spatial4HR+ subtypes.
-# Main analyses
+## Main analyses
 - HER2 copy-number status
 - Global CNV burden
 - Driver mutation frequencies
 - Subtype-specific genomic alterations
-# Figures
+## Figures
 - Figure 7f
 - Figure 7g
 
 
-# Main figure mapping
-Figure 1 	02_histopathology.R 
-Figure 2 	03_tumor_architecture_patterns.R 
-Figure 3 	06_unsupervised_clustering.R 
-Figure 4 	09_WGCNA.R 
-Figure 5 	10_multimodal_integration.R 
-Figure 6 	11_spatial4hr_genomic_risk_comparison.R
-Figure 7 	12_external_validation.R, 13_CNV_mutation.R 
+---
 
+# Main figure mapping
+
+| Figure | Script |
+|---------|--------|
+| Figure 1 | 02_fig1_histopathology.R |
+| Figure 2 | 03_fig2_tumor_architecture_patterns.R |
+| Figure 3 | 06_unsupervised_clustering.R |
+| Figure 4 | 09_WGCNA.R |
+| Figure 5 | 10_multimodal_integration.R |
+| Figure 6 | 11_spatial4hr_genomic_risk_comparison.R |
+| Figure 7 | 12_external_validation.R, 13_CNV_mutation.R |
+
+---
 
 # Notes
 File paths in the scripts should be updated to match local data locations before reproducing the analyses.
