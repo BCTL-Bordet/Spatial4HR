@@ -1,5 +1,5 @@
 ####################################
-## 03_fig2_tumor_architecture_patterns.R
+## 03_tumor_architecture_patterns.R
 ####################################
 
 
