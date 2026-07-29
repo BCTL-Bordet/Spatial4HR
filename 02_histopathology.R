@@ -1,4 +1,4 @@
-# 02_fig1_histopathology.R
+# 02_histopathology.R
 
 ####################################
 ## Fig 1a is BioRender image 
