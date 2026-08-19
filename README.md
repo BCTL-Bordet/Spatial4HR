@@ -278,8 +278,8 @@ Characterise genomic alterations associated with Spatial4HR+ subtypes.
 
 | Figure | Script |
 |---------|--------|
-| Figure 1 | 02_fig1_histopathology.R |
-| Figure 2 | 03_fig2_tumor_architecture_patterns.R |
+| Figure 1 | 02_histopathology.R |
+| Figure 2 | 03_tumor_architecture_patterns.R |
 | Figure 3 | 06_unsupervised_clustering.R |
 | Figure 4 | 09_WGCNA.R |
 | Figure 5 | 10_multimodal_integration.R |
