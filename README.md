@@ -296,3 +296,8 @@ The analyses depend on the following main R packages: Seurat v5.1.0, CARD v1.1, 
 Install R v4.4.1 and the required R packages before running the analyses.
 Most packages can be installed from CRAN or Bioconductor. Package-specific installation instructions are available from the corresponding package repositories.
 After installing the required packages, download this repository and update the file paths in the analysis scripts to point to the local data directories.
+Typical installation time depends on the local R environment and availability of package dependencies.
+
+# Running the analyses
+After downloading the required data, update the file paths in each script to match the local data locations.
+The analysis scripts are organized according to the analytical workflow and should be run as appropriate from 01 through 13. 00_forestplot.R contains helper functions used by downstream analyses.
