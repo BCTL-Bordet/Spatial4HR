@@ -289,8 +289,8 @@ Characterise genomic alterations associated with Spatial4HR+ subtypes.
 ---
 
 # Software requirements
-The analyses were performed in R v4.4.1 on macOS. The code should run on any machine on which R and the required R packages can be installed.
-The analyses depend on the following main R packages: Seurat v5.1.0, CARD v1.1, ComplexHeatmap v2.20.0, WGCNA v1.73, MOVICS v0.99.17, GSVA v1.52.3, DESeq2 v1.44.0, biomaRt v2.60.1, survival, survminer, xCell, semla, Harmony, fgsea, genefu, AIMS, NbClust and gprofiler2.
+The analyses were performed in R v4.4.1 on macOS. The code should run on any machine on which R and the required R packages can be installed. The analyses depend on the following main R packages: Seurat v5.1.0, CARD v1.1, ComplexHeatmap v2.20.0, WGCNA v1.73, MOVICS v0.99.17, GSVA v1.52.3, DESeq2 v1.44.0, biomaRt v2.60.1, survival v3.8.3, survminer v0.5.0, xCell v1.1.0, semla v1.1.6, harmony v1.2.3, fgsea v1.31.3, genefu v2.36.0, AIMS v1.36.0, NbClust v3.0.1 and gprofiler2 v0.2.3.
+
 
 # Installation
 Install R v4.4.1 and the required R packages before running the analyses.
