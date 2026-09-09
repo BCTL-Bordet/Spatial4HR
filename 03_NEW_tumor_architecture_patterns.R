@@ -1,6 +1,7 @@
 ####################################
 ## 03_tumor_architecture_patterns.R
 ####################################
+##UPDATING
 
 ## Tumor Architecture Patterns
 
@@ -236,6 +237,96 @@ ggplot(spot_count_per_group, aes(x = tumor_group, y = factor(orig.ident), size =
     axis.text.x = element_text(angle = 45, hjust = 1),
     legend.position = "right"
   )
+
+
+
+
+############################################################
+## Tumor architecture analysis
+##
+## This script:
+## 1. Classifies Visium spots according to tumor content
+## 2. Computes per-sample tumor composition profiles
+## 3. Identifies recurrent tumor architecture patterns
+##    using hierarchical clustering
+############################################################
+
+library(dplyr)
+library(tidyr)
+library(reshape2)
+library(ggplot2)
+library(NbClust)
+library(dendextend)
+
+## Build tumor composition matrix
+spot_table <- table(
+  ST_ubermeta$orig.ident,
+  ST_ubermeta$tumor_group
+)
+
+spot_table <- as.data.frame(spot_table)
+
+spot_matrix <- dcast(
+  spot_table,
+  Var1 ~ Var2,
+  value.var = "Freq"
+)
+
+rownames(spot_matrix) <- paste0(
+  "ST",
+  spot_matrix$Var1
+)
+
+spot_matrix <- spot_matrix[,-1]
+
+spot_matrix <- sweep(
+  as.matrix(spot_matrix),
+  1,
+  rowSums(spot_matrix),
+  "/"
+) * 100
+
+
+
+## Hierarchical clustering
+distance_matrix <- dist(
+  spot_matrix,
+  method = "euclidean")
+
+hc <- hclust(
+  distance_matrix,
+  method = "ward.D2")
+
+
+## Determine optimal number of clusters
+NbClust(
+  spot_matrix,
+  distance = "euclidean",
+  method = "ward.D2",
+  min.nc = 2,
+  max.nc = 10)
+
+## Majority rule identified 3 clusters
+cluster_assignments <- cutree(hc, k = 3)
+
+## Assign descriptive names
+cluster_names <- c(
+  "1" = "Local islands",
+  "2" = "Scattered",
+  "3" = "Cell-dense")
+
+tumor_patterns <- data.frame(
+  Sample = rownames(spot_matrix),
+  Cluster = cluster_assignments,
+  TumorPattern = cluster_names[
+    as.character(cluster_assignments)])
+
+## Visualize clustering
+plot(as.dendrogram(hc) %>%
+       color_branches(k = 3),
+     main = "Tumor architecture clustering")
+
+## Save results
 
 
 ####################################
@@ -852,6 +943,89 @@ red_white_blue <- color_fun(
     length.out = 100
   )
 )
+
+# 
+# ####################################
+# ##clustering
+# ####################################
+# 
+# ph <- pheatmap::pheatmap(
+#   heatmap_matrix,
+#   cluster_rows = FALSE,
+#   cluster_cols = TRUE,
+#   color = red_white_blue,
+#   breaks = brks,
+#   fontsize = 9,
+#   fontsize_row = 10,
+#   fontsize_col = 7,
+#   border_color = NA,
+#   legend = TRUE,
+#   angle_col = 90,
+#   silent = TRUE
+# )
+# 
+# ####################################
+# ## Exact original column dendrogram
+# ####################################
+# 
+# col_dend <- as.dendrogram(
+#   ph$tree_col
+# )
+# 
+# ####################################
+# ## Final heatmap + boxes
+# ####################################
+# 
+# ComplexHeatmap::Heatmap(
+#   heatmap_matrix,
+#   
+#   name = "Z score",
+#   
+#   col = color_fun,
+#   
+#   cluster_rows = FALSE,
+#   
+#   # preserve original pheatmap clustering
+#   cluster_columns = col_dend,
+#   
+#   row_names_side = "right",
+#   
+#   column_names_rot = 90,
+#   
+#   rect_gp = gpar(
+#     col = NA
+#   ),
+#   
+#   cell_fun = function(
+#     j,
+#     i,
+#     x,
+#     y,
+#     width,
+#     height,
+#     fill
+#   ) {
+#     
+#     if (
+#       isTRUE(
+#         sig_matrix[i, j]
+#       )
+#     ) {
+#       
+#       grid.rect(
+#         x = x,
+#         y = y,
+#         width = width,
+#         height = height,
+#         gp = gpar(
+#           fill = NA,
+#           col = "black",
+#           lwd = 1.5
+#         )
+#       )
+#     }
+#   }
+# )
 
 
 
