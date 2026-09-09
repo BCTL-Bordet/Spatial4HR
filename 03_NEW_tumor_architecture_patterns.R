@@ -1,7 +1,6 @@
 ####################################
 ## 03_tumor_architecture_patterns.R
 ####################################
-##UPDATING
 
 ## Tumor Architecture Patterns
 
