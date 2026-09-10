@@ -1065,7 +1065,17 @@ chisq_flow
 # X-squared = 57.852, df = 9, p-value = 3.47e-09
 
 
+tab <- table(ductal_meta$pam50,
+             ductal_meta$ductal_subtype)
 
+fisher_flow <- fisher.test(tab)
+
+fisher_flow
+
+# Fisher's Exact Test for Count Data
+# data:  tab
+# p-value = 1.816e-12
+# alternative hypothesis: two.sided
 
 
 
