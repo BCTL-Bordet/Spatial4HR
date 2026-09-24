@@ -998,3 +998,48 @@ for (set_name in names(top30_gene_list)) {
 close(con)
 
 
+
+
+
+## Save the full dataframe used for the plot
+
+saveRDS(
+  df_plot,
+  file = file.path(out_dir, "ExtendedDataFig4_df_plot.rds")
+)
+
+write.table(
+  df_plot,
+  file = file.path(out_dir, "ExtendedDataFig4_df_plot.tsv"),
+  sep = "\t",
+  quote = FALSE,
+  row.names = FALSE
+)
+
+## Save the genes used for text labels
+saveRDS(
+  top_genes_to_label,
+  file = file.path(out_dir, "ExtendedDataFig4_top_genes_to_label.rds")
+)
+
+write.table(
+  top_genes_to_label,
+  file = file.path(out_dir, "ExtendedDataFig4_top_genes_to_label.tsv"),
+  sep = "\t",
+  quote = FALSE,
+  row.names = FALSE
+)
+
+## Optional: also save the complete correlation matrix
+saveRDS(
+  cor_results,
+  file = file.path(out_dir, "ExtendedDataFig4_cor_results.rds")
+)
+
+write.table(
+  cor_results,
+  file = file.path(out_dir, "ExtendedDataFig4_cor_results.tsv"),
+  sep = "\t",
+  quote = FALSE,
+  col.names = NA
+)
