@@ -1052,7 +1052,13 @@ ductal_meta <- read.delim("~/Desktop/final_scripts/00_data/Spatial4HR_sample_met
 ## Plotting dataframe
 ####################################
 
-df <- ductal_meta
+df <- ductal_meta %>%
+  filter(!is.na(tumor_pattern), !is.na(pam50))
+
+df$tumor_pattern <- factor(
+  df$tumor_pattern,
+  levels = c("Cell-dense", "Scattered", "Nests")
+)
 
 df$GRADE <- as.factor(df$GRADE)
 
