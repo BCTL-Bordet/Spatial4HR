@@ -1,8 +1,8 @@
 ####################################
-## 03_tumor_architecture_patterns.R
+## 03_tumor_growth_patterns.R
 ####################################
 
-## Tumor Architecture Patterns
+## Tumor Growth Patterns
 
 ## 5 bins are defined based on percentages of tumor annotations of spots
 ## (0%", "0-25%", "25-50%", "50-75%", "75-100%")
@@ -241,12 +241,12 @@ ggplot(spot_count_per_group, aes(x = tumor_group, y = factor(orig.ident), size =
 
 
 ############################################################
-## Tumor architecture analysis
+## Tumor growth pattern analysis
 ##
 ## This script:
 ## 1. Classifies Visium spots according to tumor content
 ## 2. Computes per-sample tumor composition profiles
-## 3. Identifies recurrent tumor architecture patterns
+## 3. Identifies recurrent tumor growth patterns
 ##    using hierarchical clustering
 ############################################################
 
@@ -310,7 +310,7 @@ cluster_assignments <- cutree(hc, k = 3)
 
 ## Assign descriptive names
 cluster_names <- c(
-  "1" = "Local islands",
+  "1" = "Nests",
   "2" = "Scattered",
   "3" = "Cell-dense")
 
@@ -323,13 +323,13 @@ tumor_patterns <- data.frame(
 ## Visualize clustering
 plot(as.dendrogram(hc) %>%
        color_branches(k = 3),
-     main = "Tumor architecture clustering")
+     main = "Tumor pattern clustering")
 
 ## Save results
 
 
 ####################################
-## Fig 2b - Representative annotated tissue sections illustrating the three tumor architectures
+## Fig 2b - Representative annotated tissue sections illustrating the three tumor growth patterns
 ####################################
 
 
@@ -380,7 +380,7 @@ heatmap_data <- ductal_meta %>%
 row_order <- c(
   "Cell-dense",
   "Scattered",
-  "Local islands"
+  "Nests"
 )
 
 
@@ -676,7 +676,7 @@ agg_df <- CARD_data %>%
 row_order <- c(
   "Cell-dense",
   "Scattered",
-  "Local islands"
+  "Nests"
 )
 
 
@@ -1036,7 +1036,7 @@ ComplexHeatmap::Heatmap(
 
 
 ####################################
-## Fig 2e,f,g,h - Distribution of clinicopathologic features across tumor growth architectures
+## Fig 2e,f,g,h - Distribution of clinicopathologic features across tumor growth patterns
 ####################################
 
 library(dplyr)
@@ -1054,7 +1054,7 @@ df <- ductal_meta %>%
 
 df$tumor_pattern <- factor(
   df$tumor_pattern,
-  levels =  c("Cell-dense" ,   "Scattered"   , "Local islands")
+  levels =  c("Cell-dense" ,   "Scattered"   , "Nests")
 )
 
 pam50_colors <- c(
