@@ -1048,14 +1048,22 @@ library(scales)
 
 ductal_meta <- read.delim("~/Desktop/final_scripts/00_data/Spatial4HR_sample_metadata.txt")
 
-##  PAM50 
-df <- ductal_meta %>%
-  filter(!is.na(tumor_pattern), !is.na(pam50))
+####################################
+## Plotting dataframe
+####################################
 
-df$tumor_pattern <- factor(
-  df$tumor_pattern,
-  levels =  c("Cell-dense" ,   "Scattered"   , "Nests")
+df <- ductal_meta
+
+df$GRADE <- as.factor(df$GRADE)
+
+df$KI67_CATEGORIES <- factor(
+  df$KI67_CATEGORIES,
+  levels = c("≤10", "10-20", ">20")
 )
+
+####################################
+## Palettes
+####################################
 
 pam50_colors <- c(
   "LumA"        = "#F2D86D",
@@ -1067,150 +1075,263 @@ pam50_colors <- c(
   "NC"          = "#999999"
 )
 
-p2 <- ggplot(df, aes(x = tumor_pattern, fill = pam50)) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = percent) +
-  labs(
-    # title = "Proportion of PAM50 Subtypes Within Tumor Patterns",
-    x = "Tumor Pattern",
-    y = "Percentage",
-    fill = "PAM50"
-  ) +
-  scale_fill_manual(values = pam50_colors) +
-  theme_bw() +
-  theme(
-    text = element_text(size = 16),              # ⬅️ Bigger overall text
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 14),
-    axis.title = element_text(size = 16),
-    # plot.title = element_text(size = 18, face = "bold"),
-    legend.title = element_text(size = 16),
-    legend.text = element_text(size = 14)
-  )
-
-print(p2)
-
-tab <- table(df$tumor_pattern, df$pam50)
-chisq_res <- chisq.test(tab)
-
-cat("\n\n===== Chi-square Test =====\n")
-print(chisq_res)
-
-cramers_v <- assocstats(tab)$cramer
-cat("\nCramer's V:", cramers_v, "\n")
-
-
-
-##   NODAL STATUS
-
-nodal_cols <- c("N0" = "#C7C7C7", "N+" = "#009E73")
-
-grade_pal <- c("1" = "#1B9E77", 
-               "2" = "#D95F02", 
-               "3" = "#7570B3")
-
-p_tumor_nodal <- ggplot(df, aes(x = tumor_pattern, fill = N_STATUS)) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = percent_format()) +
-  scale_fill_manual(values = nodal_cols) +
-  labs(
-    x = "Tumor Pattern",
-    y = "Percentage",
-    fill = "Nodal Status"
-  ) +
-  theme_bw() +
-  theme(
-    text = element_text(size = 16),
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 14),
-    axis.title  = element_text(size = 16),
-    legend.title = element_text(size = 16),
-    legend.text  = element_text(size = 14)
-  )
-
-print(p_tumor_nodal)
-
-chisq_nodal <- chisq.test(table(df$tumor_pattern, df$N_STATUS))
-pval_nodal <- chisq_nodal$p.value
-cat("Chi-square test p-value (Tumor Pattern × Nodal Status):", pval_nodal, "\n")
-
-p_tumor_nodal
-
-df$GRADE <- as.factor(df$GRADE)
-
-
-##   GRADE
-
-p_tumor_grade <- ggplot(df, aes(x = tumor_pattern, fill = GRADE)) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = percent_format()) +
-  scale_fill_manual(values = grade_pal) +
-  labs(
-    x = "Tumor Pattern",
-    y = "Percentage",
-    fill = "Grade"
-  ) +
-  theme_bw() +
-  theme(
-    text = element_text(size = 16),
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 14),
-    axis.title  = element_text(size = 16),
-    legend.title = element_text(size = 16),
-    legend.text  = element_text(size = 14)
-  )
-
-print(p_tumor_grade)
-
-
-## SURVIVAL
-library(survival)
-library(survminer)
-
-surv_obj <- Surv(time = df$time, event = df$status)
-fit_pam50 <- survfit(surv_obj ~ tumor_pattern, data = df)
-
-ggsurvplot(
-  fit_pam50,
-  data = df,
-  pval = TRUE,
-  risk.table = TRUE,
-  conf.int = FALSE,
-  # palette = pam50_colors,       # use your custom palette!
-  xlab = "Time (days)",
-  ylab = "Overall survival probability",
-  legend.title = "PAM50",
-  # legend.labs = names(pam50_colors),
-  ggtheme = theme_minimal(base_size = 16)
+nodal_cols <- c(
+  "N0" = "#C7C7C7",
+  "N+" = "#009E73"
 )
 
-##   KI67
+grade_pal <- c(
+  "1" = "#1B9E77",
+  "2" = "#D95F02",
+  "3" = "#7570B3"
+)
+
 ki67_cols <- c(
-  "≤10"   = "#56B4E9",   # sky blue
-  "10-20" = "#E69F00",   # orange
-  ">20"   = "#009E73"    # bluish green
+  "≤10"   = "#56B4E9",
+  "10-20" = "#E69F00",
+  ">20"   = "#009E73"
 )
 
-df$KI67_CATEGORIES <- factor(df$KI67_CATEGORIES, levels = c("≤10", "10-20", ">20"))
+####################################
+## Helper: add global p value
+####################################
 
-p_tumor_ki67 <- ggplot(df, aes(x = tumor_pattern, fill = KI67_CATEGORIES)) +
-  geom_bar(position = "fill") +
-  scale_y_continuous(labels = percent_format()) +
-  scale_fill_manual(values = ki67_cols) +
-  labs(
-    x = "Tumor Pattern",
-    y = "Percentage",
-    fill = "Ki67 Category"
-  ) +
-  theme_bw() +
-  theme(
-    text = element_text(size = 16),
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),
-    axis.text.y = element_text(size = 14),
-    axis.title = element_text(size = 16),
-    legend.title = element_text(size = 16),
-    legend.text  = element_text(size = 14)
-  )
+add_global_pvalue <- function(plot, data, xvar, fillvar, y_pos = 1.08) {
+  
+  tmp <- data %>%
+    filter(!is.na(.data[[xvar]]), !is.na(.data[[fillvar]]))
+  
+  tab <- table(tmp[[xvar]], tmp[[fillvar]])
+  
+  chi <- suppressWarnings(chisq.test(tab))
+  
+  if (any(chi$expected < 5)) {
+    test <- fisher.test(tab, simulate.p.value = TRUE, B = 10000)
+    test_name <- "Fisher"
+  } else {
+    test <- chi
+    test_name <- "Chi-square"
+  }
+  
+  p_lab <- paste0(" p = ", signif(test$p.value, 3))
+  
+  plot +
+    annotate(
+      "text",
+      x = 2,
+      y = y_pos,
+      label = p_lab,
+      size = 4.5
+    ) +
+    coord_cartesian(
+      ylim = c(0, y_pos + 0.05),
+      clip = "off"
+    )
+}
 
-print(p_tumor_ki67)
+####################################
+## Helper: common stacked bar plot
+####################################
+
+make_stacked_bar <- function(data, fill_var, fill_label, fill_colors) {
+  
+  ggplot(data, aes(x = tumor_pattern, fill = .data[[fill_var]])) +
+    geom_bar(position = "fill", color = "white", linewidth = 0.2) +
+    scale_y_continuous(labels = percent_format()) +
+    scale_fill_manual(values = fill_colors, na.translate = FALSE) +
+    labs(
+      x = NULL,
+      y = "Percentage",
+      fill = fill_label
+    ) +
+    theme_bw() +
+    theme(
+      text = element_text(size = 14),
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+      axis.text.y = element_text(size = 12),
+      axis.title = element_text(size = 13),
+      legend.title = element_text(size = 12),
+      legend.text = element_text(size = 11),
+      plot.margin = margin(10, 10, 10, 10)
+    )
+}
+
+####################################
+## PAM50
+####################################
+
+df_pam50 <- df %>%
+  filter(!is.na(pam50))
+
+p_pam50 <- make_stacked_bar(
+  data = df_pam50,
+  fill_var = "pam50",
+  fill_label = "PAM50",
+  fill_colors = pam50_colors
+)
+
+p_pam50 <- add_global_pvalue(
+  p_pam50,
+  data = df_pam50,
+  xvar = "tumor_pattern",
+  fillvar = "pam50"
+)
+
+####################################
+## Nodal status
+####################################
+
+df_nodal <- df %>%
+  filter(!is.na(N_STATUS))
+
+p_nodal <- make_stacked_bar(
+  data = df_nodal,
+  fill_var = "N_STATUS",
+  fill_label = "Nodal status",
+  fill_colors = nodal_cols
+)
+
+p_nodal <- add_global_pvalue(
+  p_nodal,
+  data = df_nodal,
+  xvar = "tumor_pattern",
+  fillvar = "N_STATUS"
+)
+
+####################################
+## Grade
+####################################
+
+df_grade <- df %>%
+  filter(!is.na(GRADE))
+
+p_grade <- make_stacked_bar(
+  data = df_grade,
+  fill_var = "GRADE",
+  fill_label = "Grade",
+  fill_colors = grade_pal
+)
+
+p_grade <- add_global_pvalue(
+  p_grade,
+  data = df_grade,
+  xvar = "tumor_pattern",
+  fillvar = "GRADE"
+)
+
+####################################
+## Ki67
+####################################
+
+df_ki67 <- df %>%
+  filter(!is.na(KI67_CATEGORIES))
+
+p_ki67 <- make_stacked_bar(
+  data = df_ki67,
+  fill_var = "KI67_CATEGORIES",
+  fill_label = "Ki67",
+  fill_colors = ki67_cols
+)
+
+p_ki67 <- add_global_pvalue(
+  p_ki67,
+  data = df_ki67,
+  xvar = "tumor_pattern",
+  fillvar = "KI67_CATEGORIES"
+)
+
+####################################
+## Print individual plots
+####################################
+
+print(p_pam50)
+print(p_nodal)
+print(p_grade)
+print(p_ki67)
+
+####################################
+## Save individual plots
+####################################
+
+ggsave(
+  "Fig2f_PAM50_by_tumor_pattern_with_pvalue.pdf",
+  p_pam50,
+  width = 5,
+  height = 5
+)
+
+ggsave(
+  "Fig2f_Nodal_status_by_tumor_pattern_with_pvalue.pdf",
+  p_nodal,
+  width = 5,
+  height = 5
+)
+
+ggsave(
+  "Fig2f_Grade_by_tumor_pattern_with_pvalue.pdf",
+  p_grade,
+  width = 5,
+  height = 5
+)
+
+ggsave(
+  "Fig2f_Ki67_by_tumor_pattern_with_pvalue.pdf",
+  p_ki67,
+  width = 5,
+  height = 5
+)
+
+####################################
+## Combined figure: 1 row, 4 columns
+####################################
+
+fig2f_combined <- p_pam50 + p_nodal + p_grade + p_ki67 +
+  plot_layout(nrow = 1)
+
+print(fig2f_combined)
+
+ggsave(
+  "/Users/bengisukarakose/Desktop/NATCOM REVISION/0_last revision files 7.10/new_figs/Fig2efgh_clinicopathologic_features_by_tumor_pattern_with_pvalues.pdf",
+  fig2f_combined,
+  width = 18,
+  height = 4.8
+)
+
+
+
+
+####################################
+## Print statistical results
+####################################
+
+print_global_test <- function(data, xvar, fillvar, label) {
+  
+  tmp <- data %>%
+    filter(!is.na(.data[[xvar]]), !is.na(.data[[fillvar]]))
+  
+  tab <- table(tmp[[xvar]], tmp[[fillvar]])
+  
+  chi <- suppressWarnings(chisq.test(tab))
+  
+  if (any(chi$expected < 5)) {
+    test <- fisher.test(tab, simulate.p.value = TRUE, B = 10000)
+    test_name <- "Fisher exact test simulated"
+  } else {
+    test <- chi
+    test_name <- "Chi-square test"
+  }
+  
+  cat("\n\n===== ", label, " =====\n", sep = "")
+  cat(test_name, "\n")
+  print(test)
+  
+  if (all(dim(tab) > 1)) {
+    cat("Cramer's V:", assocstats(tab)$cramer, "\n")
+  }
+}
+
+print_global_test(df_pam50, "tumor_pattern", "pam50", "PAM50")
+print_global_test(df_nodal, "tumor_pattern", "N_STATUS", "Nodal status")
+print_global_test(df_grade, "tumor_pattern", "GRADE", "Grade")
+print_global_test(df_ki67, "tumor_pattern", "KI67_CATEGORIES", "Ki67")
 
