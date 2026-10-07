@@ -263,7 +263,7 @@ heatmap_data <- ductal_meta %>%
   summarise(across(all_of(annotations), mean, na.rm = TRUE)) %>%
   column_to_rownames("tumor_pattern")
 
-row_order <- c("Cell-dense", "Scattered", "Local islands")
+row_order <- c("Cell-dense", "Scattered", "Nests")
 
 heatmap_matrix <- scale(heatmap_data)
 heatmap_matrix <- heatmap_matrix[row_order, ]   # reorder rows
@@ -340,7 +340,7 @@ agg_df <- CARD_data %>%
   summarise(across(all_of(columns_to_plot), mean, na.rm = TRUE)) %>%
   ungroup()
 
-row_order <- c("Cell-dense", "Scattered", "Local islands")
+row_order <- c("Cell-dense", "Scattered", "Nests")
 
 heatmap_matrix <- agg_df %>%
   column_to_rownames("tumor_pattern") %>%
@@ -395,7 +395,7 @@ df <- ductal_ubermeta %>%
 
 df$tumor_pattern <- factor(
   df$tumor_pattern,
-  levels =  c("Cell-dense" ,   "Scattered"   , "Local islands")
+  levels =  c("Cell-dense" ,   "Scattered"   , "Nests")
 )
 
 pam50_colors <- c(
