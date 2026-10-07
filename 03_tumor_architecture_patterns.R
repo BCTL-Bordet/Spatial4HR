@@ -1,9 +1,9 @@
 ####################################
-## 03_tumor_architecture_patterns.R
+## 03_tumor_growth_patterns.R
 ####################################
 
 
-## Tumor Architecture Patterns
+## Tumor Growth Patterns
 
 ## 5 bins are defined based on percentages of tumor annotations of spots
 ## (0%", "0-25%", "25-50%", "50-75%", "75-100%")
@@ -241,7 +241,7 @@ ggplot(spot_count_per_group, aes(x = tumor_group, y = factor(orig.ident), size =
 
 
 ####################################
-## Fig 2b - Representative annotated tissue sections illustrating the three tumor architectures
+## Fig 2b - Representative annotated tissue sections illustrating the three tumor growth patterns
 ####################################
 
 
@@ -377,7 +377,7 @@ pheatmap(
 
 
 ####################################
-## Fig 2e,f,g,h - Distribution of clinicopathologic features across tumor growth architectures
+## Fig 2e,f,g,h - Distribution of clinicopathologic features across tumor growth patterns
 ####################################
 
 library(dplyr)
