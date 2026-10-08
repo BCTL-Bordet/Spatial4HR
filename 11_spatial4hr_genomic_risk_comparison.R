@@ -459,7 +459,6 @@ print(p)
 
 #############################################################
 ## Fig. 6e - EnR vs SF Stroma Pseudobulk Comparison 
-## on MammaPrint low risk patients
 #############################################################
 
 library(dplyr)
